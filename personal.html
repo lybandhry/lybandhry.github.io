@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>个人资料 - PDF 展示</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .tabs {
+      display: flex;
+      background: #3a5f8c;
+    }
+
+    .tab {
+      padding: 16px 32px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .tab:hover {
+      background: #2d4a6d;
+    }
+
+    .tab.active {
+      background: #253e5a;
+    }
+
+    .pdf-viewer {
+      height: 70vh; /* 可根据需要调整 */
+      width: 100%;
+      border: none;
+      display: none;
+    }
+
+    .pdf-viewer.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="tabs">
+    <div class="tab active" onclick="switchPdf('resume')">个人简历</div>
+    <div class="tab" onclick="switchPdf('awards')">个人奖项</div>
+  </div>
+
+  <!-- 嵌入 PDF -->
+  <embed id="resume" src="resume.pdf" type="application/pdf" class="pdf-viewer active" />
+  <embed id="awards" src="awards.pdf" type="application/pdf" class="pdf-viewer" />
+</div>
+
+<script>
+  function switchPdf(pdfId) {
+    // 移除所有 active 类
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.pdf-viewer').forEach(v => v.classList.remove('active'));
+
+    // 激活当前选中的 tab 和 PDF
+    event.target.classList.add('active');
+    document.getElementById(pdfId).classList.add('active');
+  }
+</script>
+
+
+<script>
+  // 雪花特效
+  function snowFall() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    document.body.appendChild(canvas);
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.pointerEvents = 'none'; // 确保不会干扰其他元素的点击事件
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const snowflakes = [];
+    const snowflakeCount = 200; // 雪花数量
+
+    for (let i = 0; i < snowflakeCount; i++) {
+      snowflakes.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 4 + 1, // 雪花大小
+        speedX: Math.random() * 3 - 1.5,
+        speedY: Math.random() * 3 + 1,
+      });
+    }
+
+    function drawSnowflake(snowflake) {
+      ctx.beginPath();
+      ctx.arc(snowflake.x, snowflake.y, snowflake.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.fill();
+    }
+
+    function update() {
+      ctx.clearRect(0, 0, width, height);
+
+      snowflakes.forEach(snowflake => {
+        snowflake.x += snowflake.speedX;
+        snowflake.y += snowflake.speedY;
+
+        if (snowflake.y > height) {
+          snowflake.y = -snowflake.radius;
+        }
+        if (snowflake.x > width) {
+          snowflake.x = 0;
+        } else if (snowflake.x < 0) {
+          snowflake.x = width;
+        }
+
+        drawSnowflake(snowflake);
+      });
+
+      requestAnimationFrame(update);
+    }
+
+    update();
+  }
+
+  window.onload = function () {
+    snowFall();
+  };
+</script>
+
+
+</body>
+</html>
